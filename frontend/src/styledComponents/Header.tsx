@@ -2,6 +2,9 @@ import { FC } from "react";
 import styled from "styled-components";
 
 interface HeaderProps {
+  $width: string;
+  $height: string;
+  $border: string;
   $size: string;
   $weight: string;
   $color: string;
@@ -11,6 +14,9 @@ interface HeaderProps {
 }
 
 const StyledHeader = styled.header<Partial<HeaderProps>>`
+  width: ${(props) => props.$width};
+  height: ${(props) => props.$height};
+  border: ${(props) => props.$border};
   font-size: ${(props) => props.$size};
   font-weight: ${(props) => props.$weight};
   color: ${(props) => props.$color};
