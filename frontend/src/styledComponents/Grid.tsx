@@ -8,7 +8,11 @@ const Grid = styled.div`
   grid-row-gap: 5px;
   width: 100%;
   height: 150px;
-  margin: 0;
+
+  & > *:nth-child(1),
+  & > *:nth-child(2) {
+    margin-bottom: -5px;
+  }
 `;
 
 export default Grid;

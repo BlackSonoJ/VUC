@@ -8,9 +8,10 @@ const GlobalStyles = createGlobalStyle`
   }
 
   html,body, #root {
+
   width:100%;
   height: fit-content;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: "Roboto", serif;
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;

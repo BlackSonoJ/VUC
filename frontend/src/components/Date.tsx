@@ -11,7 +11,7 @@ export const DateBlock: FC = () => {
       $gridArea="1 / 1 / 2 / 2"
       $justify="center"
       $align="center"
-      $margin="0 5px 0 5px"
+      $bgColor="#0c0c23"
     >
       <Paragraph $fontSize="3rem">{today.toLocaleDateString()}</Paragraph>
     </Flex>

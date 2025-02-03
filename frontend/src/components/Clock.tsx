@@ -15,8 +15,9 @@ export const Clock: FC = () => {
 
   return (
     <Container
-      width="100%"
-      $borderTop="2px solid #0000be"
+      $width="100%"
+      $borderTop="2px solid #0f0f81"
+      $bgColor="#0c0c23"
       $gridArea="2 / 1 / 3 / 2"
     >
       <Paragraph $fontSize="4rem">{time.toLocaleTimeString()}</Paragraph>

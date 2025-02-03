@@ -11,8 +11,9 @@ export const Content: FC = () => {
         height="100%"
         $justify="center"
         $align="center"
-        $border="5px solid #8555ff"
+        $border="10px solid #3b04c67c"
         $boxShadow="0 0 0 2px white"
+        $borderRadius="5px"
       >
         <Image
           width="100%"

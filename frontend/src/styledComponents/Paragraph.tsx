@@ -7,6 +7,7 @@ interface PragraphProps {
   $maxLines?: number;
   $fontSize?: string;
   $textAlign?: string;
+  $margin?: string;
   children: React.ReactNode;
 }
 
@@ -15,11 +16,7 @@ const StyledParagraph = styled.p<PragraphProps>`
   font-size: ${(props) => props.$fontSize || "12px"};
   text-align: ${(props) => props.$textAlign || "center"};
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${(props) => props.$maxLines || 2};
-  text-overflow: ellipsis;
-  overflow-wrap: ${(props) => props.$wrap};
+  margin: ${(props) => props.$margin};
 `;
 
 export const Paragraph: FC<PragraphProps> = (props) => {

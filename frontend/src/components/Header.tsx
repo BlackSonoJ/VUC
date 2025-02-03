@@ -1,19 +1,30 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import HeaderComponent from "../styledComponents/Header";
 import { Clock } from "./Clock";
 import { DateBlock } from "./Date";
 import { MainPageButton } from "./MainPageButton";
 import Grid from "../styledComponents/Grid";
 import { MenuButton } from "./MenuButton";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export const Header: FC = () => {
+  const [buttonText, setButtonText] = useState<string>("");
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setButtonText("Вы на главной");
+    } else {
+      setButtonText("Назад на главную");
+    }
+  }, [location.pathname]);
+
   return (
     <HeaderComponent $width="100%" $height="150px" $margin="0 0 7px 0">
       <Grid>
         <DateBlock />
         <Clock />
-        <MainPageButton />
+        <MainPageButton buttonText={buttonText} />
         <Link
           to="/videos"
           style={{

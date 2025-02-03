@@ -3,7 +3,11 @@ import { Paragraph } from "../styledComponents/Paragraph";
 import { Flex } from "../styledComponents/Flex";
 import { Link } from "react-router-dom";
 
-export const MainPageButton: FC = () => {
+type MainPageButtonProps = {
+  buttonText: string;
+};
+
+export const MainPageButton: FC<MainPageButtonProps> = ({ buttonText }) => {
   return (
     <Link
       to="/"
@@ -23,7 +27,7 @@ export const MainPageButton: FC = () => {
         $align="center"
         $borderRadius="3px"
       >
-        <Paragraph $fontSize="18px">Назад на главную</Paragraph>
+        <Paragraph $fontSize="18px">{buttonText}</Paragraph>
       </Flex>
     </Link>
   );
