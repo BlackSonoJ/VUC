@@ -49,9 +49,11 @@ def start_button(call: telebot.types.CallbackQuery):
     start(call.message)
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
+
 """
 Обработка запросов на просмотр и редактирование галереи изображений
 """
+
 
 @bot.callback_query_handler(func=lambda call: call.data == "images_start")
 def image_start_button(call: telebot.types.CallbackQuery):
@@ -61,9 +63,11 @@ def image_start_button(call: telebot.types.CallbackQuery):
     bot.send_message(chat_id=call.message.chat.id, text="""Выберите действие""", reply_markup=markup)
     bot.delete_message(call.message.chat.id, call.message.message_id)
 
+
 """
 Обработка запросов на просмотр и редактирование галереи видео
 """
+
 
 @bot.callback_query_handler(func=lambda call: call.data == "videos_start")
 def videos_start_button(call: telebot.types.CallbackQuery):
@@ -72,6 +76,16 @@ def videos_start_button(call: telebot.types.CallbackQuery):
     markup.add(telebot.types.InlineKeyboardButton("≪ Назад", callback_data="back_to_start"))
     bot.send_message(chat_id=call.message.chat.id, text="""Выберите действие""", reply_markup=markup)
     bot.delete_message(call.message.chat.id, call.message.message_id)
+
+
+
+@bot.message_handler(content_types=['photo'])
+def photo_id(message):
+    photo = max(message.photo, key=lambda x: x.height)
+    print(photo.file_id)
+
+
+
 
 def start_bot():
     bot.infinity_polling(skip_pending=True)
