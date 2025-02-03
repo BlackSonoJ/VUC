@@ -1,2 +1,4 @@
-*.env
-*.txt
+.env
+.vscode/
+.isort.cfg
+.mypy.ini
