@@ -3,9 +3,10 @@ from django.contrib.auth.models import User
 from django.utils import timezone 
 
 
-class ImageStorage:
+class ImageStorage(models.Model):
     image_id =models.TextField()
-    publish = models.DateTimeField(default=timezone.now)
+    publish = models.DateTimeField(default=timezone.now())
+
 
 class Profile(models.Model):  
     """Расширение модели User для добавления дополнительных полей"""  

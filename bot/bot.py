@@ -1,12 +1,22 @@
 import os
-
+import datetime
 
 import telebot
 from dotenv import load_dotenv
+import psycopg2
 
 
 load_dotenv()
 bot = telebot.TeleBot(os.getenv('BOT_TOKEN'))
+
+db = psycopg2.connect(
+    host=os.getenv('DB_HOST'),         
+    port=os.getenv('DB_PORT'),              
+    database=os.getenv('DB_NAME'),    
+    user=os.getenv('DB_USER'),            
+    password=os.getenv('DB_PASSWORD')    
+)
+
 """
 Обработка старового сообщения + несколько маленьких кнопок
 """
@@ -81,9 +91,12 @@ def videos_start_button(call: telebot.types.CallbackQuery):
 
 @bot.message_handler(content_types=['photo'])
 def photo_id(message):
-    for i in range (3, len(message.photo), 4):
-        file_id = message.photo[i].file_id
-        bot.send_photo(chat_id=message.chat.id, photo=file_id)
+    db.autocommit = True
+    with db.cursor() as cursor:
+        for i in range (3, len(message.photo), 4):
+            file_id = message.photo[i].file_id
+            cursor.execute("INSERT INTO api_imagestorage (image_id, publish) VALUES (%s, %s);", (file_id, datetime.datetime.now(),))
+            #bot.send_photo(chat_id=message.chat.id, photo=file_id)
 
 
 def start_bot():
