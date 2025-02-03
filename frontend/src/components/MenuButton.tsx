@@ -4,14 +4,14 @@ import { Paragraph } from "../styledComponents/Paragraph";
 
 type MenuButtonProps = {
   text: string;
-  gridArea: string;
+  gridArea?: string;
   margin?: string;
 };
 
 export const MenuButton: FC<MenuButtonProps> = ({ text, gridArea, margin }) => {
   return (
     <Flex
-      width="150px"
+      width="170px"
       $justify="center"
       $align="center"
       $bgColor="#2b41fe"

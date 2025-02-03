@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { Header } from "../components/Header";
-import { Content } from "../components/Content";
+import { Calendar } from "../components/Calendar";
 
-export const MainPage: FC = () => {
+export const CalendarPage: FC = () => {
   return (
     <>
       <Header />
-      <Content />
+      <Calendar />
     </>
   );
 };

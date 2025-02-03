@@ -7,8 +7,8 @@ export const DateBlock: FC = () => {
 
   return (
     <Flex
-      width="250px"
-      $gridArea="1 / 1 / 2 / 3"
+      width="100%"
+      $gridArea="1 / 1 / 2 / 2"
       $justify="center"
       $align="center"
       $margin="0 5px 0 5px"

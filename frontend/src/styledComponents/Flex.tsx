@@ -21,7 +21,9 @@ interface FlexProps {
   height: string;
   $gridArea: string;
   $bgColor: string;
+  $border: string;
   $borderRadius: string;
+  $boxShadow: string;
   cursor: string;
 
   children: React.ReactNode;
@@ -43,6 +45,8 @@ const StyledFlex = styled.div<Partial<FlexProps>>`
   grid-area: ${(props) => props.$gridArea};
   background-color: ${(props) => props.$bgColor || "transparent"};
   border-radius: ${(props) => props.$borderRadius || "0"};
+  border: ${(props) => props.$border};
+  box-shadow: ${(props) => props.$boxShadow};
   cursor: ${(props) => props.cursor};
 `;
 

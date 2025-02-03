@@ -14,7 +14,8 @@ const GlobalStyles = createGlobalStyle`
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
-  background-color:rgba(245, 245, 245, 0.89);
+  padding: 4px;
+  background-color: #000040;
   }
 `;
 

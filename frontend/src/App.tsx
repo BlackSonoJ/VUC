@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import { Header } from "./components/Header";
+
+import { MainPage } from "./pages/mainPage";
 
 const AppWrapper = styled.div`
   width: 100%;
-  height: 100vh;
-  background-color: navy;
+  height: 100rem;
 `;
 
 function App() {
   return (
     <AppWrapper>
-      <Header />
+      <MainPage />
     </AppWrapper>
   );
 }

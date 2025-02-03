@@ -2,6 +2,8 @@ import { FC } from "react";
 import styled from "styled-components";
 
 interface ContainerProps {
+  $textAlign: string;
+  $fontWeight: string;
   $position: "relative" | "sticky" | "absolute" | "static" | "fixed";
   $top: string;
   $bottom: string;
@@ -9,7 +11,8 @@ interface ContainerProps {
   display: string;
   $justify: string;
   $align: string;
-  width: string;
+  $width: string;
+  $height: string;
   $maxWidth: string;
   height: string;
   $margin: string;
@@ -23,6 +26,9 @@ interface ContainerProps {
   $zIndex: number;
   cursor: string;
   $gridArea: string;
+  $gridTemplateColumns: string;
+  $gridTemplateRows: string;
+  $gap: string;
   children: React.ReactNode;
 
   onClick: () => void;
@@ -30,6 +36,8 @@ interface ContainerProps {
 }
 
 const StyledContainer = styled.div<Partial<ContainerProps>>`
+  text-align: ${(props) => props.$textAlign};
+  font-weight: ${(props) => props.$fontWeight};
   position: ${(props) => props.$position || "static"};
   ${(props) => props.$top && `top: ${props.$top};`}
   ${(props) => props.$bottom && `bottom: ${props.$bottom};`}
@@ -37,18 +45,23 @@ const StyledContainer = styled.div<Partial<ContainerProps>>`
   display: ${(props) => props.display || "block"};
   ${(props) => props.$justify && `justify-content: ${props.$justify};`}
   ${(props) => props.$align && `align-items: ${props.$align};`}
-  width: ${(props) => props.width || "auto"};
-  max-width: ${(props) => props.width || "auto"};
+  width: ${(props) => props.$width || "auto"};
+  height: ${(props) => props.$height};
+  max-width: ${(props) => props.$width};
   padding: ${(props) => props.$padding || "0"};
   height: ${(props) => props.height || "auto"};
   margin: ${(props) => props.$margin || "0"};
   background-color: ${(props) => props.$bgColor || "transparent"};
+  border: ${(props) => props.$border};
   border-radius: ${(props) => props.$borderRadius || "0"};
   border-top: ${(props) => props.$borderTop || "none"};
   border-bottom: ${(props) => props.$borderBottom || "none"};
   box-shadow: ${(props) => props.$boxShadow || "none"};
   z-index: ${(props) => props.$zIndex || "0"};
   grid-area: ${(props) => props.$gridArea};
+  grid-template-columns: ${(props) => props.$gridTemplateColumns};
+  grid-template-rows: ${(props) => props.$gridTemplateRows};
+  gap: ${(props) => props.$gap};
   cursor: ${(props) => props.cursor};
 `;
 
