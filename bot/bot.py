@@ -81,10 +81,9 @@ def videos_start_button(call: telebot.types.CallbackQuery):
 
 @bot.message_handler(content_types=['photo'])
 def photo_id(message):
-    photo = max(message.photo, key=lambda x: x.height)
-    print(photo.file_id)
-
-
+    for i in range (3, len(message.photo), 4):
+        file_id = message.photo[i].file_id
+        bot.send_photo(chat_id=message.chat.id, photo=file_id)
 
 
 def start_bot():

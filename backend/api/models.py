@@ -1,7 +1,12 @@
 from django.db import models  
-from django.contrib.auth.models import User  
+from django.contrib.auth.models import User 
+from django.utils import timezone 
 
-  
+
+class ImageStorage:
+    image_id =models.TextField()
+    publish = models.DateTimeField(default=timezone.now)
+
 class Profile(models.Model):  
     """Расширение модели User для добавления дополнительных полей"""  
     user = models.OneToOneField(User, on_delete=models.CASCADE)  
@@ -16,7 +21,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)  
   
     def __str__(self):  
-        return self.name  
+        return f'{self.name}'  
   
 class Post(models.Model):  
     """Модель поста"""  
@@ -32,7 +37,7 @@ class Post(models.Model):
         ordering = ['-published']  
   
     def __str__(self):  
-        return self.title  
+        return f'{self.title}'  
   
 class Comment(models.Model):  
     """Модель комментария"""  
