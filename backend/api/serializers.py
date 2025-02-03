@@ -1,7 +1,8 @@
-from rest_framework import serializers  
-from .models import  ImageStorage
+from rest_framework import serializers
+from .models import Images
 
-class ImageStorageSerializer(serializers.ModelSerializer):
-    class Meta:  
-        model = ImageStorage  
-        fields = ('id', 'image_id', 'published')
+
+class ImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Images
+        fields = ("id", "image_id", "published")
