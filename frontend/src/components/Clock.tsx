@@ -14,8 +14,12 @@ export const Clock: FC = () => {
   }, []);
 
   return (
-    <Container>
-      <Paragraph $fontSize="64px">{time.toLocaleTimeString()}</Paragraph>
+    <Container
+      width="250px"
+      $borderTop="1px solid white"
+      $gridArea="2 / 1 / 3 / 3"
+    >
+      <Paragraph $fontSize="4rem">{time.toLocaleTimeString()}</Paragraph>
     </Container>
   );
 };

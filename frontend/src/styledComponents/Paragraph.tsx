@@ -6,12 +6,14 @@ interface PragraphProps {
   $wrap?: "normal" | "anywhere" | "break-word";
   $maxLines?: number;
   $fontSize?: string;
+  $textAlign?: string;
   children: React.ReactNode;
 }
 
 const StyledParagraph = styled.p<PragraphProps>`
   color: ${(props) => props.color || "white"};
   font-size: ${(props) => props.$fontSize || "12px"};
+  text-align: ${(props) => props.$textAlign || "center"};
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;

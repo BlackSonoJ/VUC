@@ -1,13 +1,19 @@
 import { FC } from "react";
-import { Container } from "../styledComponents/Container";
 import { Paragraph } from "../styledComponents/Paragraph";
+import { Flex } from "../styledComponents/Flex";
 
 export const DateBlock: FC = () => {
   const today = new Date();
 
   return (
-    <Container>
-      <Paragraph $fontSize="64px">{today.toLocaleDateString()}</Paragraph>
-    </Container>
+    <Flex
+      width="250px"
+      $gridArea="1 / 1 / 2 / 3"
+      $justify="center"
+      $align="center"
+      $margin="0 5px 0 5px"
+    >
+      <Paragraph $fontSize="3rem">{today.toLocaleDateString()}</Paragraph>
+    </Flex>
   );
 };

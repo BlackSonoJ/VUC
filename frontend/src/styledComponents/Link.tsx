@@ -7,6 +7,7 @@ interface LinkProps {
   $width: string;
   $height: string;
   color: string;
+  $gridArea: string;
   children: React.ReactNode;
 }
 
@@ -15,6 +16,7 @@ const StyledLink = styled.a<Partial<LinkProps>>`
   width: ${(props) => props.$width};
   height: ${(props) => props.$height};
   color: ${(props) => props.color};
+  grid-area: ${(props) => props.$gridArea};
 `;
 
 export const Link: FC<Partial<LinkProps>> = (props) => {

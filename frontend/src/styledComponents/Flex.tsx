@@ -19,7 +19,10 @@ interface FlexProps {
   $gap: string;
   width: string;
   height: string;
+  $gridArea: string;
   $bgColor: string;
+  $borderRadius: string;
+  cursor: string;
 
   children: React.ReactNode;
   onClick: MouseEventHandler<HTMLDivElement>;
@@ -37,7 +40,10 @@ const StyledFlex = styled.div<Partial<FlexProps>>`
   padding: ${(props) => props.$padding || "0"};
   width: ${(props) => props.width || "auto"};
   height: ${(props) => props.height || "auto"};
+  grid-area: ${(props) => props.$gridArea};
   background-color: ${(props) => props.$bgColor || "transparent"};
+  border-radius: ${(props) => props.$borderRadius || "0"};
+  cursor: ${(props) => props.cursor};
 `;
 
 export const Flex: FC<Partial<FlexProps>> = (props) => {

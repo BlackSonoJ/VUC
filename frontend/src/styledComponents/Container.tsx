@@ -22,6 +22,7 @@ interface ContainerProps {
   $boxShadow: string;
   $zIndex: number;
   cursor: string;
+  $gridArea: string;
   children: React.ReactNode;
 
   onClick: () => void;
@@ -47,6 +48,7 @@ const StyledContainer = styled.div<Partial<ContainerProps>>`
   border-bottom: ${(props) => props.$borderBottom || "none"};
   box-shadow: ${(props) => props.$boxShadow || "none"};
   z-index: ${(props) => props.$zIndex || "0"};
+  grid-area: ${(props) => props.$gridArea};
   cursor: ${(props) => props.cursor};
 `;
 
