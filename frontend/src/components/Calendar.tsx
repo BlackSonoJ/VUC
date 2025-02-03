@@ -41,6 +41,9 @@ export const Calendar: FC = () => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const currentMonthAndYear = getCurrentMonthAndYear(currentMonth, currentYear);
+  const currentMonthAndYearUpperCase =
+    currentMonthAndYear.slice(0, 1).toUpperCase() +
+    currentMonthAndYear.slice(1);
   const calendarDays = generateCalendar(currentMonth, currentYear);
 
   const goToPreviousMonth = () => {
@@ -74,7 +77,7 @@ export const Calendar: FC = () => {
           ◀
         </Button>
         <Paragraph color="white" $fontSize="32px">
-          {currentMonthAndYear}
+          {currentMonthAndYearUpperCase}
         </Paragraph>
         <Button color="white" cursor="pointer" onClick={goToNextMonth}>
           ▶
@@ -84,7 +87,7 @@ export const Calendar: FC = () => {
       <Container
         display="grid"
         $gridTemplateColumns="repeat(7, 1fr)"
-        $gridTemplateRows="50px repeat(6, 150px)"
+        $gridTemplateRows="50px repeat(6, 200px)"
         $gap="5px"
       >
         {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((day, index) => (
