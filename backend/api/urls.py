@@ -1,12 +1,14 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import ImageStorageViewSet
+from .views import ImageViewSet, ImageMainPageViewSet, EventsViewSet
 
 
 app_name = "api"
 
 router = routers.DefaultRouter()
-router.register(r"images", ImageStorageViewSet)
+router.register(r"images", ImageViewSet)
+router.register(r"imagesMainPage", ImageMainPageViewSet)
+router.register(r"events", EventsViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
