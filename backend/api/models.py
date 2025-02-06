@@ -3,11 +3,11 @@ from django.utils import timezone
 
 
 class Images(models.Model):
-    image_id = models.TextField()
+    image = models.ImageField(upload_to="images/", default=None)
     published = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.image_id}"
+        return f"{self.published}"
 
     class Meta:
         verbose_name = "Изображение"

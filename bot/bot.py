@@ -146,20 +146,20 @@ def videos_start_button(call: telebot.types.CallbackQuery):
 def photo_id(message):
     if waiting_for_image_upload[message.chat.id]:
         waiting_for_image_upload[message.chat.id] = False
-        db.autocommit = True
-        with db.cursor() as cursor:
-            for i in range(3, len(message.photo), 4):
-                file_id = message.photo[i].file_id
-                cursor.execute(
-                    "INSERT INTO api_images (image_id, published) VALUES (%s, %s);",
-                    (
-                        file_id,
-                        datetime.datetime.now(),
-                    ),
-                )
-        bot.send_message(message.chat.id, """Успешно загружено""")
-        bot.delete_message(message.chat.id, message.message_id - 1)
-        start(message)
+        # db.autocommit = True
+        # with db.cursor() as cursor:
+        #     for i in range(3, len(message.photo), 4):
+        #         file_id = message.photo[i].file_id
+        #         # cursor.execute(
+        #         #     "INSERT INTO api_images (image_id, published) VALUES (%s, %s);",
+        #         #     (
+        #         #         file_id,
+        #         #         datetime.datetime.now(),
+        #         #     ),
+        #         # )
+        # # bot.send_message(message.chat.id, """Успешно загружено""")
+        # # bot.delete_message(message.chat.id, message.message_id - 1)
+        # start(message)
 
 
 def close_upload(message):

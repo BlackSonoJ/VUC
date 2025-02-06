@@ -2,3 +2,4 @@
 .vscode/
 .isort.cfg
 .mypy.ini
+media/
