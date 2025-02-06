@@ -3,3 +3,5 @@
 .isort.cfg
 .mypy.ini
 media/
+
+/venv
