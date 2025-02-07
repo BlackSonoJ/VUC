@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
-    'corsheaders',
+    "corsheaders",
     "api",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    'corsheaders.middleware.CorsMiddleware',  
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -136,40 +136,31 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",  # JWT аутентификация
-        "rest_framework.authentication.SessionAuthentication",  # Сессионная аутентификация для браузера
-    ),
-    "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",  # Разрешения по умолчанию
-    ),
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",  # Фильтрация
-        "rest_framework.filters.SearchFilter",  # Поиск
-        "rest_framework.filters.OrderingFilter",  # Сортировка
-    ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",  # Пагинация
-    "PAGE_SIZE": 10,  # Размер страницы
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ]
 }
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-
 ]
 
 CORS_ALLOW_METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'DELETE',
-    'OPTIONS',
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS",
 ]
 
 CORS_ALLOW_HEADERS = [
-    'content-type',
-    'authorization',
-    'x-csrftoken',
+    "content-type",
+    "authorization",
+    "x-csrftoken",
 ]

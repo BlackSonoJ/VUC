@@ -3,6 +3,7 @@ import datetime
 import requests
 from io import BytesIO
 
+
 import telebot
 from dotenv import load_dotenv
 import psycopg2
@@ -134,8 +135,9 @@ def image_upload__main_button(call: telebot.types.CallbackQuery):
     )
     bot.send_message(
         chat_id=call.message.chat.id,
-        text="""Отправьте изображения.
-        После отправки нажмите "Назад" на этом сообщении, чтобы завершить загрузку.
+        text="""
+Отправьте изображения.
+После отправки нажмите "Назад" на этом сообщении, чтобы завершить загрузку.
         """,
         reply_markup=markup,
     )
@@ -176,31 +178,18 @@ def videos_start_button(call: telebot.types.CallbackQuery):
 )  # даже если фото отправлены одной группой, они обрабатываются как разные сообщения.
 def save_photo(message):
     if waiting_for_image_upload[message.chat.id]:
+        # Fetch the file from Telegram
+        file_id = message.photo[-1].file_id
+        file_path = bot.get_file(file_id).file_path
         response = requests.get(
-            "https://api.telegram.org/file/bot{0}/{1}".format(
-                API_TOKEN, bot.get_file(message.photo[-1].file_id).file_path
-            )
+            f"https://api.telegram.org/file/bot{API_TOKEN}/{file_path}"
         )
         img_data = response.content
-        image = Image.open(
-            BytesIO(img_data)
-        )  # можно сохранять сразу в бд и на фронтенде преобразовывать.
-        image.save("{0}.jpg".format(message.photo[-1].file_id))
-
-        # db.autocommit = True
-        # with db.cursor() as cursor:
-        #     for i in range(3, len(message.photo), 4):
-        #         file_id = message.photo[i].file_id
-        #         cursor.execute(
-        #             "INSERT INTO api_images (image_id, published) VALUES (%s, %s);",
-        #             (
-        #                 file_id,
-        #                 datetime.datetime.now(),
-        #             ),
-        #         )
-        # bot.send_message(message.chat.id, """Успешно загружено""")
-        # bot.delete_message(message.chat.id, message.message_id - 1)
-        # start(message)
+        files = {"image": ("{0}.jpg".format(file_id), img_data, "image/jpeg")}
+        url = "http://127.0.0.1:8000/api/images/"
+        username = os.getenv("API_USER")
+        password = os.getenv("API_PASSWORD")
+        requests.post(url, files=files, auth=(username, password))
 
 
 def close_upload(message):
