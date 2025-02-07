@@ -1,8 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Images(models.Model):
-    image = models.ImageField(upload_to="images/", default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to="images/gallery", default=None)
     published = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -14,9 +17,10 @@ class Images(models.Model):
 
 
 class Events(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.TextField(max_length=250)
     description = models.TextField(blank=True)
-    published = models.DateTimeField(auto_now=True)
+    published = models.DateField(default=timezone.now)
 
     class Meta:
         ordering = ["published"]
@@ -29,6 +33,7 @@ class Events(models.Model):
 
 
 class ImagesMainPage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     image = models.ImageField(upload_to="images/main/", default=None)
     published = models.DateTimeField(auto_now=True)
 
