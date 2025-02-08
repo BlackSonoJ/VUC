@@ -34,7 +34,7 @@ class Events(models.Model):
 
 class ImagesMainPage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    image = models.ImageField(upload_to="images/main/", default=None)
+    image = models.ImageField(upload_to="images/main", default=None)
     published = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -44,3 +44,17 @@ class ImagesMainPage(models.Model):
         ordering = ["-published"]
         verbose_name = "Изображение на главной странице"
         verbose_name_plural = "Изображения на главной странице"
+
+
+class Videos(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    video = models.FileField(upload_to="videos/")
+    published = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.published}"
+
+    class Meta:
+        ordering = ["-published"]
+        verbose_name = "Видеоматериал"
+        verbose_name_plural = "Видеоматериалы"

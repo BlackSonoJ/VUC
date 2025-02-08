@@ -10,6 +10,13 @@ import psycopg2
 from PIL import Image
 
 waiting_for_image_upload = {}
+where_to_upload = {}
+URLS_API = {
+    "images": "http://127.0.0.1:8000/api/images/",
+    "imagesMain": "http://127.0.0.1:8000/api/imagesMain/",
+    "videos": "http://127.0.0.1:8000/api/videos/",
+    "events": "http://127.0.0.1:8000/api/events/",
+}
 load_dotenv()
 API_TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
@@ -128,7 +135,18 @@ def image_start_button(call: telebot.types.CallbackQuery):
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "image_upload_main")
-def image_upload__main_button(call: telebot.types.CallbackQuery):
+def image_upload_main_button(call: telebot.types.CallbackQuery):
+    where_to_upload[call.message.chat.id] = URLS_API["imagesMain"]
+    image_upload_button(call)
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "image_upload_gallery")
+def image_upload_gallery_button(call: telebot.types.CallbackQuery):
+    where_to_upload[call.message.chat.id] = URLS_API["images"]
+    image_upload_button(call)
+
+
+def image_upload_button(call: telebot.types.CallbackQuery):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton("≪ Назад", callback_data="images_start")
@@ -173,26 +191,23 @@ def videos_start_button(call: telebot.types.CallbackQuery):
     # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
-@bot.message_handler(
-    content_types=["photo"]
-)  # даже если фото отправлены одной группой, они обрабатываются как разные сообщения.
+@bot.message_handler(content_types=["photo"])
 def save_photo(message):
-    if waiting_for_image_upload[message.chat.id]:
-        # Fetch the file from Telegram
-        file_id = message.photo[-1].file_id
-        file_path = bot.get_file(file_id).file_path
-        response = requests.get(
-            f"https://api.telegram.org/file/bot{API_TOKEN}/{file_path}"
-        )
-        img_data = response.content
-        files = {"image": ("{0}.jpg".format(file_id), img_data, "image/jpeg")}
-        url = "http://127.0.0.1:8000/api/images/"
-        username = os.getenv("API_USER")
-        password = os.getenv("API_PASSWORD")
-        requests.post(url, files=files, auth=(username, password))
+    if not waiting_for_image_upload[message.chat.id]:
+        return
+    file_id = message.photo[-1].file_id
+    file_path = bot.get_file(file_id).file_path
+    response = requests.get(f"https://api.telegram.org/file/bot{API_TOKEN}/{file_path}")
+    img_data = response.content
+    files = {"image": ("{0}.jpg".format(file_id), img_data, "image/jpeg")}
+    url = where_to_upload[message.chat.id]
+    username = os.getenv("API_USER")
+    password = os.getenv("API_PASSWORD")
+    requests.post(url, files=files, auth=(username, password))
 
 
 def close_upload(message):
+    where_to_upload.setdefault(message.chat.id, "")
     if waiting_for_image_upload.setdefault(message.chat.id, False):
         waiting_for_image_upload[message.chat.id] = False
 

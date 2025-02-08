@@ -1,8 +1,13 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions
 from rest_framework import generics
 
-from .models import Images, ImagesMainPage, Events
-from .serializers import ImagesSerializer, ImagesMainPageSerializer, EventsSerializer
+from .models import Images, ImagesMainPage, Events, Videos
+from .serializers import (
+    ImagesSerializer,
+    ImagesMainPageSerializer,
+    EventsSerializer,
+    VideosSerializer,
+)
 
 
 class ImagesList(generics.ListCreateAPIView):
@@ -48,4 +53,20 @@ class EventsList(generics.ListCreateAPIView):
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Events.objects.all()
     serializer_class = EventsSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class VideosList(generics.ListCreateAPIView):
+
+    queryset = Videos.objects.all()
+    serializer_class = VideosSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class VideoDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Videos.objects.all()
+    serializer_class = VideosSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
