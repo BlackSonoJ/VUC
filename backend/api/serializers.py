@@ -30,7 +30,7 @@ class EventsSerializer(serializers.ModelSerializer):
         user = validated_data.get("user")
         description = validated_data.get("description")
         published = validated_data.get("published")
-        return Images.objects.create(
+        return Events.objects.create(
             name=name,
             user=user,
             description=description,
