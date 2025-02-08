@@ -16,6 +16,7 @@ export const Content: FC = () => {
     axios
       .get('http://localhost:8000/api/images/')
       .then(response => {
+        console.log(response);
         if (Array.isArray(response.data.results)) {
           setImages(response.data.results);
         } else {
@@ -27,6 +28,8 @@ export const Content: FC = () => {
       })
       .catch(err => console.error(err));
   }, []);
+
+  console.log();
 
   return (
     <Container
