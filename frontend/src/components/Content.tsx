@@ -16,20 +16,14 @@ export const Content: FC = () => {
     axios
       .get('http://localhost:8000/api/images/')
       .then(response => {
-        console.log(response);
-        if (Array.isArray(response.data.results)) {
-          setImages(response.data.results);
+        if (Array.isArray(response.data)) {
+          setImages(response.data);
         } else {
-          console.error(
-            'Response data is not an array:',
-            response.data.results
-          );
+          console.error('Response data is not an array:', response.status);
         }
       })
       .catch(err => console.error(err));
   }, []);
-
-  console.log();
 
   return (
     <Container
@@ -45,12 +39,14 @@ export const Content: FC = () => {
         $boxShadow='0 0 0 2px white'
         $borderRadius='5px'
       >
-        <Image
-          width='100%'
-          $cover='cover'
-          height='fit-content'
-          src={images[0].image}
-        />
+        {images.length > 0 && (
+          <Image
+            width='100%'
+            $cover='cover'
+            height='fit-content'
+            src={images[0].image}
+          />
+        )}
       </Flex>
     </Container>
   );
