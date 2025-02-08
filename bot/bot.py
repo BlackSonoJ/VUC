@@ -1,13 +1,18 @@
 import os
 import datetime
+import requests
+from io import BytesIO
+
 
 import telebot
 from dotenv import load_dotenv
 import psycopg2
+from PIL import Image
 
 waiting_for_image_upload = {}
 load_dotenv()
-bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
+API_TOKEN = os.getenv("BOT_TOKEN")
+bot = telebot.TeleBot(API_TOKEN)
 
 db = psycopg2.connect(
     host=os.getenv("DB_HOST"),
@@ -51,7 +56,7 @@ def start(message):
                     """,
         reply_markup=markup,
     )
-    bot.delete_message(message.chat.id, message.message_id)
+    # bot.delete_message(message.chat.id, message.message_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "close")
@@ -75,13 +80,13 @@ def info_button(call: telebot.types.CallbackQuery):
     """,
         reply_markup=markup,
     )
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "back_to_start")
 def start_button(call: telebot.types.CallbackQuery):
     start(call.message)
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 """
@@ -94,8 +99,24 @@ def image_start_button(call: telebot.types.CallbackQuery):
     close_upload(call.message)
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
-        telebot.types.InlineKeyboardButton("Добавить", callback_data="image_upload"),
-        telebot.types.InlineKeyboardButton("Удалить", callback_data="image_delete"),
+        telebot.types.InlineKeyboardButton(
+            "Добавить на главный экран", callback_data="image_upload_main"
+        ),
+    )
+    markup.add(
+        telebot.types.InlineKeyboardButton(
+            "Добавить в галерею", callback_data="image_upload_gallery"
+        ),
+    )
+    markup.add(
+        telebot.types.InlineKeyboardButton(
+            "Удалить c главного экрана", callback_data="image_delete_main"
+        ),
+    )
+    markup.add(
+        telebot.types.InlineKeyboardButton(
+            "Удалить из галереи", callback_data="image_delete_gallery"
+        ),
     )
     markup.add(
         telebot.types.InlineKeyboardButton("≪ Назад", callback_data="back_to_start")
@@ -103,22 +124,25 @@ def image_start_button(call: telebot.types.CallbackQuery):
     bot.send_message(
         chat_id=call.message.chat.id, text="""Выберите действие""", reply_markup=markup
     )
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
-@bot.callback_query_handler(func=lambda call: call.data == "image_upload")
-def image_upload_button(call: telebot.types.CallbackQuery):
+@bot.callback_query_handler(func=lambda call: call.data == "image_upload_main")
+def image_upload__main_button(call: telebot.types.CallbackQuery):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton("≪ Назад", callback_data="images_start")
     )
     bot.send_message(
         chat_id=call.message.chat.id,
-        text="""Отправьте от 1 до 10 изображений одним сообщением""",
+        text="""
+Отправьте изображения.
+После отправки нажмите "Назад" на этом сообщении, чтобы завершить загрузку.
+        """,
         reply_markup=markup,
     )
     waiting_for_image_upload[call.message.chat.id] = True
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 """
@@ -130,8 +154,15 @@ def image_upload_button(call: telebot.types.CallbackQuery):
 def videos_start_button(call: telebot.types.CallbackQuery):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
-        telebot.types.InlineKeyboardButton("Добавить", callback_data="video_upload"),
-        telebot.types.InlineKeyboardButton("Удалить", callback_data="video_delete"),
+        telebot.types.InlineKeyboardButton(
+            "Добавить на главный экран", callback_data="video_upload_main"
+        ),
+        telebot.types.InlineKeyboardButton(
+            "Добавить в галерею", callback_data="video_upload"
+        ),
+        telebot.types.InlineKeyboardButton(
+            "Удалить из галереи", callback_data="video_delete"
+        ),
     )
     markup.add(
         telebot.types.InlineKeyboardButton("≪ Назад", callback_data="back_to_start")
@@ -139,27 +170,26 @@ def videos_start_button(call: telebot.types.CallbackQuery):
     bot.send_message(
         chat_id=call.message.chat.id, text="""Выберите действие""", reply_markup=markup
     )
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+    # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
-@bot.message_handler(content_types=["photo"])
-def photo_id(message):
+@bot.message_handler(
+    content_types=["photo"]
+)  # даже если фото отправлены одной группой, они обрабатываются как разные сообщения.
+def save_photo(message):
     if waiting_for_image_upload[message.chat.id]:
-        waiting_for_image_upload[message.chat.id] = False
-        # db.autocommit = True
-        # with db.cursor() as cursor:
-        #     for i in range(3, len(message.photo), 4):
-        #         file_id = message.photo[i].file_id
-        #         # cursor.execute(
-        #         #     "INSERT INTO api_images (image_id, published) VALUES (%s, %s);",
-        #         #     (
-        #         #         file_id,
-        #         #         datetime.datetime.now(),
-        #         #     ),
-        #         # )
-        # # bot.send_message(message.chat.id, """Успешно загружено""")
-        # # bot.delete_message(message.chat.id, message.message_id - 1)
-        # start(message)
+        # Fetch the file from Telegram
+        file_id = message.photo[-1].file_id
+        file_path = bot.get_file(file_id).file_path
+        response = requests.get(
+            f"https://api.telegram.org/file/bot{API_TOKEN}/{file_path}"
+        )
+        img_data = response.content
+        files = {"image": ("{0}.jpg".format(file_id), img_data, "image/jpeg")}
+        url = "http://127.0.0.1:8000/api/images/"
+        username = os.getenv("API_USER")
+        password = os.getenv("API_PASSWORD")
+        requests.post(url, files=files, auth=(username, password))
 
 
 def close_upload(message):
