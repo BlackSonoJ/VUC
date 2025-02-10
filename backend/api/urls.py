@@ -1,26 +1,21 @@
-from django.urls import path
-from .views import (
-    ImagesList,
-    ImageDetail,
-    ImagesMainPageList,
-    ImageMainPageDetail,
-    EventsList,
-    EventDetail,
-    VideosList,
-    VideoDetail,
+from django.urls import include, path
+from rest_framework import routers
+
+from .views import ImagesViewSet, ImagesMainPageViewSet, EventsViewSet, VideosViewSet
+
+app = "api"
+
+router = routers.DefaultRouter()
+router.register(r"images", ImagesViewSet)
+router.register(
+    r"imagesMain",
+    ImagesMainPageViewSet,
 )
-
-
-app_name = "api"
+router.register(r"events", EventsViewSet)
+router.register(r"videos", VideosViewSet)
 
 
 urlpatterns = [
-    path("imagesMain/", ImagesMainPageList.as_view()),
-    path("imagesMain/<int:pk>/", ImageMainPageDetail.as_view()),
-    path("images/", ImagesList.as_view()),
-    path("images/<int:pk>/", ImageDetail.as_view()),
-    path("events/", EventsList.as_view()),
-    path("events/<int:pk>/", EventDetail.as_view()),
-    path("videos/", VideosList.as_view()),
-    path("videos/<int:pk>/", VideoDetail.as_view()),
+    path("", include(router.urls)),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]

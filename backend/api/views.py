@@ -1,5 +1,4 @@
-from rest_framework import permissions
-from rest_framework import generics
+from rest_framework import viewsets, permissions
 
 from .models import Images, ImagesMainPage, Events, Videos
 from .serializers import (
@@ -9,9 +8,10 @@ from .serializers import (
     VideosSerializer,
 )
 
+# Create your views here.
 
-class ImagesList(generics.ListCreateAPIView):
 
+class ImagesViewSet(viewsets.ModelViewSet):
     queryset = Images.objects.all()
     serializer_class = ImagesSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -20,13 +20,7 @@ class ImagesList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ImageDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Images.objects.all()
-    serializer_class = ImagesSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class ImagesMainPageList(generics.ListCreateAPIView):
+class ImagesMainPageViewSet(viewsets.ModelViewSet):
     queryset = ImagesMainPage.objects.all()
     serializer_class = ImagesMainPageSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -35,13 +29,7 @@ class ImagesMainPageList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ImageMainPageDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ImagesMainPage.objects.all()
-    serializer_class = ImagesMainPageSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class EventsList(generics.ListCreateAPIView):
+class EventsViewSet(viewsets.ModelViewSet):
     queryset = Events.objects.all()
     serializer_class = EventsSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -50,13 +38,7 @@ class EventsList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Events.objects.all()
-    serializer_class = EventsSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class VideosList(generics.ListCreateAPIView):
+class VideosViewSet(viewsets.ModelViewSet):
 
     queryset = Videos.objects.all()
     serializer_class = VideosSerializer
@@ -64,9 +46,3 @@ class VideosList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-class VideoDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Videos.objects.all()
-    serializer_class = VideosSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
