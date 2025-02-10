@@ -5,19 +5,25 @@
 С бота запросы get, post, put, delete
 Подготовил студент ЛН-23, возможность правок после запуска не предусмотрена
 Реализация удаления сообщений требует правок, старый формат закомментирован, новый пока не реализован
+Клонируешь реп https://github.com/BlackSonoJ/VUC.git и потом жестко кайфуешь
+Ищи помощи, нас тут было двое, один на backend и бота, второй на front
+Ну или ты слишлом крутой для этого?
 """
 
 import os
 import requests
+import functools
 
 
 import telebot
 from dotenv import load_dotenv
-import psycopg2
 
 
 waiting_for_upload = {}
 where_to_upload = {}
+calendar_upload_data = {}
+messages_waiting_for_deleting = {}
+
 URLS_API = {  # переписать, чтобы считывалось с http://127.0.0.1:8000/api/
     "images": "http://127.0.0.1:8000/api/images/",
     "imagesMain": "http://127.0.0.1:8000/api/imagesMain/",
@@ -28,33 +34,71 @@ load_dotenv()
 API_TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
 
-db = psycopg2.connect(
-    host=os.getenv("DB_HOST"),
-    port=os.getenv("DB_PORT"),
-    database=os.getenv("DB_NAME"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-)
+
+def close_upload(func):
+    """Декоратор, заткрывает поток загрузки"""
+
+    @functools.wraps(func)
+    def _wrapper(*args, **kwargs):
+        if isinstance(args[0], telebot.types.CallbackQuery):
+            chat_id = args[0].message.chat.id
+        elif isinstance(args[0], telebot.types.Message):
+            chat_id = args[0].chat.id
+        else:
+            chat_id = None
+        where_to_upload.setdefault(chat_id, "")
+        calendar_upload_data.setdefault(
+            chat_id,
+            {
+                "name": "",
+                "decription": "",
+                "published": "",
+            },
+        )
+        if waiting_for_upload.setdefault(chat_id, False):
+            waiting_for_upload[chat_id] = False
+        return func(*args, **kwargs)
+
+    return _wrapper
+
+
+def open_upload(func):
+    """Декоратор, открывает поток загрузки"""
+
+    @functools.wraps(func)
+    def _wrapper(*args, **kwargs):
+        if isinstance(args[0], telebot.types.CallbackQuery):
+            chat_id = args[0].message.chat.id
+        elif isinstance(args[0], telebot.types.Message):
+            chat_id = args[0].chat.id
+        else:
+            chat_id = None
+        waiting_for_upload[chat_id] = True
+        return func(*args, **kwargs)
+
+    return _wrapper
 
 
 @bot.message_handler(commands=["start"])
+@close_upload
 def start(message):
     """Обработка /start, главное меню"""
 
-    close_upload(message)
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton(
-            "Галлерея изображений", callback_data="images_start"
+            "📷 Галлерея изображений", callback_data="images_start"
         )
     )
     markup.add(
         telebot.types.InlineKeyboardButton(
-            "Галлерея видео", callback_data="videos_start"
+            "🎥 Галлерея видео", callback_data="videos_start"
         )
     )
     markup.add(
-        telebot.types.InlineKeyboardButton("Календарь", callback_data="calendar_start")
+        telebot.types.InlineKeyboardButton(
+            "🗓️ Календарь", callback_data="calendar_start"
+        )
     )
     markup.add(
         telebot.types.InlineKeyboardButton("🔍 Информация", callback_data="info"),
@@ -109,11 +153,34 @@ def start_button(call: telebot.types.CallbackQuery):
     # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
+@bot.callback_query_handler(func=lambda call: call.data == "calendar_start")
+@close_upload
+def calendar_start_button(call: telebot.types.CallbackQuery):
+    """Главная страница по работе с календарем"""
+    markup = telebot.types.InlineKeyboardMarkup()
+    markup.add(
+        telebot.types.InlineKeyboardButton(
+            "Добавить в календарь", callback_data="calendar_add"
+        ),
+    )
+    markup.add(
+        telebot.types.InlineKeyboardButton(
+            "Редактировать календарь", callback_data="calendar_edit"
+        ),
+    )
+    markup.add(
+        telebot.types.InlineKeyboardButton("≪ Назад", callback_data="back_to_start")
+    )
+    bot.send_message(
+        chat_id=call.message.chat.id, text="""Выберите действие""", reply_markup=markup
+    )
+
+
 @bot.callback_query_handler(func=lambda call: call.data == "images_start")
+@close_upload
 def image_start_button(call: telebot.types.CallbackQuery):
     """Главная страница по работе с изображениями"""
 
-    close_upload(call.message)
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton(
@@ -160,6 +227,7 @@ def image_upload_gallery_button(call: telebot.types.CallbackQuery):
     image_upload_button(call)
 
 
+@open_upload
 def image_upload_button(call: telebot.types.CallbackQuery):
     """Открываем поток для обработки изображений, кнопка назад вернет в меню выбора местоположения входящий изображений и закроет поток до следующего запроса"""
 
@@ -175,23 +243,24 @@ def image_upload_button(call: telebot.types.CallbackQuery):
         """,
         reply_markup=markup,
     )
-    waiting_for_upload[call.message.chat.id] = True
     # bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "videos_start")
+@close_upload
 def videos_start_button(call: telebot.types.CallbackQuery):
     """Главная страница по работе с видео"""
 
-    close_upload(call.message)
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(
         telebot.types.InlineKeyboardButton(
-            "Добавить в видеоматериалов", callback_data="video_upload"
-        ),
+            "Добавить видеоматериал", callback_data="video_upload"
+        )
+    )
+    markup.add(
         telebot.types.InlineKeyboardButton(
-            "Удалить из видеоматериалов", callback_data="video_delete"
-        ),
+            "Удалить видеоматериал", callback_data="video_delete"
+        )
     )
     markup.add(
         telebot.types.InlineKeyboardButton("≪ Назад", callback_data="back_to_start")
@@ -203,6 +272,7 @@ def videos_start_button(call: telebot.types.CallbackQuery):
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "video_upload")
+@open_upload
 def videos_upload_button(call: telebot.types.CallbackQuery):
     """Открытие потока загрузки видео, по хорошему объединить с открытием потока на видео, но лениво"""
 
@@ -219,7 +289,6 @@ def videos_upload_button(call: telebot.types.CallbackQuery):
         """,
         reply_markup=markup,
     )
-    waiting_for_upload[call.message.chat.id] = True
 
 
 @bot.message_handler(content_types=["photo"])
@@ -249,19 +318,11 @@ def save_video(message):
     response = requests.get(
         f"https://api.telegram.org/file/bot{API_TOKEN}/{file_path}", timeout=5
     )
-    img_data = response.content
-    files = {"video": (f"{file_id}.mp4", img_data, "video/mp4")}
+    video_data = response.content
+    files = {"video": (f"{file_id}.mp4", video_data, "video/mp4")}
     url = where_to_upload[message.chat.id]
     headers = {"Authorization": f"Bearer {get_api_token()}"}
     response = requests.post(url, files=files, headers=headers, timeout=15)
-
-
-def close_upload(message):
-    """Закрываем поток загрузки"""
-
-    where_to_upload.setdefault(message.chat.id, "")
-    if waiting_for_upload.setdefault(message.chat.id, False):
-        waiting_for_upload[message.chat.id] = False
 
 
 def get_api_token():
