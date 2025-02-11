@@ -1,15 +1,1 @@
 @import 'tailwindcss';
-
-* {
-  /* margin: 0; */
-  /* padding: 0; */
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  height: fit-content;
-  font-family: 'Roboto', serif;
-  font-optical-sizing: auto;
-}
