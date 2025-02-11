@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import Header from '../components/Header.vue';
+import Calendar from '../components/Calendar.vue';
 </script>
 <template>
   <Header />
-  <div class="w-full h-screen">fgsdgfdgdfgdfgdf</div>
+  <Calendar />
 </template>
 <style scoped></style>

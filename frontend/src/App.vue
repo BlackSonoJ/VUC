@@ -3,8 +3,11 @@ import Main from './pages/Main.vue';
 </script>
 
 <template>
-  <div class="app-wrapper">
+  <!-- <div class="app-wrapper">
     <Main />
+  </div> -->
+  <div id="app">
+    <router-view> </router-view>
   </div>
 </template>
 
