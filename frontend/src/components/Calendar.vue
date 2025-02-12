@@ -41,16 +41,16 @@ const getEventForDay = (day: number) => {
   });
 };
 
-// const fetchEvents = async () => {
-//   try {
-//     const response = await apiService.get<Event[]>('/api/events');
-//     events.value = response.data;
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+const fetchEvents = async () => {
+  try {
+    const response = await apiService.get<Event[]>('/api/events');
+    events.value = response.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
-// onMounted(fetchEvents);
+onMounted(fetchEvents);
 
 const goToPreviousMonth = () => {
   if (currentMonth.value === 0) {
@@ -72,7 +72,10 @@ const goToNextMonth = () => {
 </script>
 <template>
   <div class="w-full h-fit">
-    <div class="my-5 flex justify-between items-center w-full">
+    <div
+      class="my-5 flex justify-between items-center w-full"
+      style="margin-top: 2rem"
+    >
       <button
         class="cursor-pointer"
         @click="goToPreviousMonth"
@@ -87,15 +90,20 @@ const goToNextMonth = () => {
         ▶
       </button>
     </div>
-    <div class="grid grid-cols-7 gap-1 grid-rows-[5px_repeat(6,_200px)]">
+    <div
+      class="flex items-center justify-center"
+      style="margin-bottom: 2rem; margin-top: 2rem"
+    >
       <div
-        class="font-bold text-center my-2"
+        class="text-center w-full"
         v-for="(day, index) in daysOfWeek"
         :key="index"
       >
-        {{ day }}
-        <p class="text-lg">{{ day }}</p>
+        <p class="text-lg font-bold">{{ day }}</p>
       </div>
+    </div>
+
+    <div class="grid grid-cols-7 gap-1 grid-rows-[200px_repeat(6,_200px)]">
       <div
         class="relative flex flex-col items-center p-4 w-full h-full border border-gray-300 rounded-xl shadow-md transition-all duration-300"
         :class="day ? 'bg-white hover:bg-gray-100' : 'bg-gray-200 opacity-50'"
