@@ -92,7 +92,7 @@ const goToNextMonth = () => {
     </div>
     <div
       class="flex items-center justify-center"
-      style="margin-bottom: 2rem; margin-top: 2rem"
+      style="margin-bottom: 1rem; margin-top: 2rem"
     >
       <div
         class="text-center w-full"
