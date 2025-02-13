@@ -3,6 +3,6 @@
 .isort.cfg
 .mypy.ini
 media/
-
+/frontend/public/
 /venv
 /env
