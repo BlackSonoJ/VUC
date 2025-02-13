@@ -16,6 +16,7 @@ interface Event {
 const currentMonth = ref(new Date().getMonth());
 const currentYear = ref(new Date().getFullYear());
 const events = ref<Event[]>([]);
+const errorMessage = ref<string | null>(null);
 const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
 const currentMonthAndYear = computed(() => {
@@ -46,7 +47,7 @@ const fetchEvents = async () => {
     const response = await apiService.get<Event[]>('/api/events');
     events.value = response.data;
   } catch (err) {
-    console.error(err);
+    errorMessage.value = 'Произошла ошибка при загрузке событий';
   }
 };
 
@@ -71,6 +72,13 @@ const goToNextMonth = () => {
 };
 </script>
 <template>
+  <div
+    v-if="errorMessage"
+    class="text-[14px] text-red-500 mb-4 font-bold text-center"
+  >
+    {{ errorMessage }}
+  </div>
+
   <div class="w-full h-fit">
     <div
       class="my-5 flex justify-between items-center w-full"
@@ -118,16 +126,12 @@ const goToNextMonth = () => {
         <div
           class="mt-10 flex flex-col items-center justify-center gap-4 text-center w-[50%]"
           v-if="getEventForDay(day)"
+          style="margin-top: 15px"
         >
           <p
-            class="text-blue-600 font-bold text-lg w-full break-words whitespace-pre-line"
+            class="text-blue-600 font-bold text-[12px] w-full break-words whitespace-pre-line"
           >
             {{ getEventForDay(day)?.name }}
-          </p>
-          <p
-            class="text-gray-700 text-sm w-full break-words whitespace-pre-line"
-          >
-            {{ getEventForDay(day)?.description }}
           </p>
         </div>
       </div>
