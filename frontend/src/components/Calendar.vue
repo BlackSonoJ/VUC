@@ -5,19 +5,16 @@ import {
   generateCalendar,
 } from '../utils/calendarGenerate';
 import apiService from '../api/apiService';
-
-interface Event {
-  id: number;
-  name: string;
-  description: string;
-  published: string;
-}
+import CalendarModal from './CalendarModal.vue';
+import Event from '../@types/eventType.type';
 
 const currentMonth = ref(new Date().getMonth());
 const currentYear = ref(new Date().getFullYear());
 const events = ref<Event[]>([]);
+const selectedEvent = ref<Event | null>(null);
 const errorMessage = ref<string | null>(null);
 const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+const isOpen = ref<boolean>(false);
 
 const currentMonthAndYear = computed(() => {
   const formatted = getCurrentMonthAndYear(
@@ -70,6 +67,18 @@ const goToNextMonth = () => {
     currentMonth.value++;
   }
 };
+
+const handleDayClick = (day: number) => {
+  const event = getEventForDay(day);
+  if (event) {
+    selectedEvent.value = event;
+    isOpen.value = true;
+  }
+};
+
+const handleClose = () => {
+  isOpen.value = false;
+};
 </script>
 <template>
   <div
@@ -117,6 +126,7 @@ const goToNextMonth = () => {
         :class="day ? 'bg-white hover:bg-gray-100' : 'bg-gray-200 opacity-50'"
         v-for="(day, index) in calendarDays"
         :key="index"
+        @click="handleDayClick(day)"
       >
         <span
           class="absolute top-2 left-2 text-gray-800 font-semibold text-lg"
@@ -137,5 +147,11 @@ const goToNextMonth = () => {
       </div>
     </div>
   </div>
+
+  <CalendarModal
+    :isOpen="isOpen"
+    :event="selectedEvent"
+    @close="handleClose"
+  />
 </template>
 <style></style>
