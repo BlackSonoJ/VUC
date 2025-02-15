@@ -22,7 +22,6 @@ const handleClose = () => {
 const getImages = async () => {
   try {
     const response = await apiService.get<ImagesType[]>('/api/images');
-    console.log(response);
     images.value = response.data;
   } catch (err) {
     errorMessage.value = 'Произошла ошибка при загрузке изображений';
@@ -33,7 +32,7 @@ onMounted(getImages);
 </script>
 <template>
   <div
-    class="w-full mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+    class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
     style="margin-top: 40px"
   >
     <GalleryImage

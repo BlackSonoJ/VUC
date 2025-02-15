@@ -94,14 +94,14 @@ const handleClose = () => {
       style="margin-top: 2rem"
     >
       <button
-        class="cursor-pointer"
+        class="cursor-pointer w-[30px] h-[30px] flex items-center justify-center"
         @click="goToPreviousMonth"
       >
         ◀
       </button>
       <p class="text-2xl">{{ currentMonthAndYear }}</p>
       <button
-        class="cursor-pointer"
+        class="cursor-pointer w-[30px] h-[30px] flex items-center justify-center"
         @click="goToNextMonth"
       >
         ▶
@@ -120,9 +120,9 @@ const handleClose = () => {
       </div>
     </div>
 
-    <div class="grid grid-cols-7 gap-1 grid-rows-[200px_repeat(6,_200px)]">
+    <div class="grid grid-cols-7 gap-1 grid-rows-[150px_repeat(6,_150px)]">
       <div
-        class="relative flex flex-col items-center p-4 w-full h-full border border-gray-300 rounded-xl shadow-md transition-all duration-300"
+        class="relative flex flex-col items-center p-4 w-full h-full border border-gray-300 rounded-xl shadow-md transition-all duration-300 cursor-pointer"
         :class="day ? 'bg-white hover:bg-gray-100' : 'bg-gray-200 opacity-50'"
         v-for="(day, index) in calendarDays"
         :key="index"

@@ -23,7 +23,6 @@ const fetchImages = async () => {
   try {
     const response = await apiService.get<ImagesType[]>('/api/imagesMain');
     images.value = response.data;
-    console.log(response);
   } catch (err) {
     errorMessage.value = 'Произошла ошибка при загрузке изображений';
   }

@@ -8,7 +8,7 @@ const props = defineProps({
     <img
       :src="props.image"
       alt="photo"
-      class="w-[200px] object-cover h-[200px]"
+      class="w-full object-fill h-full"
     />
   </div>
 </template>
