@@ -5,18 +5,16 @@ import {
   generateCalendar,
 } from '../utils/calendarGenerate';
 import apiService from '../api/apiService';
-
-interface Event {
-  id: number;
-  name: string;
-  description: string;
-  published: string;
-}
+import CalendarModal from './CalendarModal.vue';
+import Event from '../@types/eventType.type';
 
 const currentMonth = ref(new Date().getMonth());
 const currentYear = ref(new Date().getFullYear());
 const events = ref<Event[]>([]);
+const selectedEvent = ref<Event | null>(null);
+const errorMessage = ref<string | null>(null);
 const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+const isOpen = ref<boolean>(false);
 
 const currentMonthAndYear = computed(() => {
   const formatted = getCurrentMonthAndYear(
@@ -46,7 +44,7 @@ const fetchEvents = async () => {
     const response = await apiService.get<Event[]>('/api/events');
     events.value = response.data;
   } catch (err) {
-    console.error(err);
+    errorMessage.value = 'Произошла ошибка при загрузке событий';
   }
 };
 
@@ -69,8 +67,27 @@ const goToNextMonth = () => {
     currentMonth.value++;
   }
 };
+
+const handleDayClick = (day: number) => {
+  const event = getEventForDay(day);
+  if (event) {
+    selectedEvent.value = event;
+    isOpen.value = true;
+  }
+};
+
+const handleClose = () => {
+  isOpen.value = false;
+};
 </script>
 <template>
+  <div
+    v-if="errorMessage"
+    class="text-[14px] text-red-500 mb-4 font-bold text-center"
+  >
+    {{ errorMessage }}
+  </div>
+
   <div class="w-full h-fit">
     <div
       class="my-5 flex justify-between items-center w-full"
@@ -109,6 +126,7 @@ const goToNextMonth = () => {
         :class="day ? 'bg-white hover:bg-gray-100' : 'bg-gray-200 opacity-50'"
         v-for="(day, index) in calendarDays"
         :key="index"
+        @click="handleDayClick(day)"
       >
         <span
           class="absolute top-2 left-2 text-gray-800 font-semibold text-lg"
@@ -118,20 +136,22 @@ const goToNextMonth = () => {
         <div
           class="mt-10 flex flex-col items-center justify-center gap-4 text-center w-[50%]"
           v-if="getEventForDay(day)"
+          style="margin-top: 15px"
         >
           <p
-            class="text-blue-600 font-bold text-lg w-full break-words whitespace-pre-line"
+            class="text-blue-600 font-bold text-[12px] w-full break-words whitespace-pre-line"
           >
             {{ getEventForDay(day)?.name }}
-          </p>
-          <p
-            class="text-gray-700 text-sm w-full break-words whitespace-pre-line"
-          >
-            {{ getEventForDay(day)?.description }}
           </p>
         </div>
       </div>
     </div>
   </div>
+
+  <CalendarModal
+    :isOpen="isOpen"
+    :event="selectedEvent"
+    @close="handleClose"
+  />
 </template>
 <style></style>

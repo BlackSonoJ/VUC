@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Header from '../components/Header.vue';
+import InfoContent from '../components/InfoContent.vue';
+</script>
 <template>
-  <RouterLink to="/">
-    <div></div>
-  </RouterLink>
+  <Header />
+  <InfoContent />
 </template>
 <style scoped></style>

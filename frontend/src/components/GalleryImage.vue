@@ -4,11 +4,11 @@ const props = defineProps({
 });
 </script>
 <template>
-  <div class="w-full h-full">
+  <div class="w-[200px] h-[200px] cursor-pointer">
     <img
       :src="props.image"
       alt="photo"
-      class="w-full object-cover"
+      class="w-[200px] object-cover h-[200px]"
     />
   </div>
 </template>

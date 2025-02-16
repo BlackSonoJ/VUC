@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import GalleryVideo from '../components/GalleryVideo.vue';
 import Header from '../components/Header.vue';
 </script>
 <template>
   <Header />
-  <div class="w-full h-screen">fgsdgfdgdfgdfgdf</div>
+  <GalleryVideo />
 </template>
 <style scoped></style>
